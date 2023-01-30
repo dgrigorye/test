@@ -36,12 +36,12 @@ def get_mapping(f: Files, targetdir: str) -> FilesMap:
 
     num_diff_files = len(set(FileMap.values()))
     if num_diff_files == N:
-        # All files unique. WDL will not localize them in made-up subdirectories
+        # All files are unique. WDL will not localize them in made-up subdirectories
         return FileMap
     else:
         num_diff_dirs = len(set(DirMap.values()))
         if num_diff_dirs == N:
-            # All files unique. WDL will not localize them in made-up subdirectories
+            # All first-level dirs are unique.
             return DirMap
     raise ValueError("Both files and first-level directories are not unique, implement deeper recursion")
 
