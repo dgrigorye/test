@@ -15,10 +15,18 @@ workflow ScatterSingleCell {
             input_h5 = input_h5
         }
     }
+
+    call GatherH5 {
+        input:
+            count_matrixes_h5s = ProcessOneH5.count_matrix,
+            umaps_pngs = ProcessOneH5.umap,
+            rank_genes_pngs = ProcessOneH5.rank_genes
+    }
+
     output {
-        Array[File] count_matrix_h5ad = ProcessOneH5.count_matrix
-        Array[File] umap_png = ProcessOneH5.umap
-        Array[File] gene_rank_png = ProcessOneH5.rank_genes
+        Array[File] count_matrix_h5ad = GatherH5.count_matrixes
+        Array[File] umap_png = GatherH5.umaps
+        Array[File] gene_rank_png = GatherH5.rank_genes
     }
 }
 
@@ -43,5 +51,28 @@ task ProcessOneH5 {
 
     runtime {
         docker: docker_image
+    }
+}
+
+task GatherH5 {
+    input {
+        Array[File] count_matrixes_h5s
+        Array[File] umaps_pngs
+        Array[File] rank_genes_pngs
+    }
+
+    command {
+        mkdir count_matrixes
+        cp ${sep=' ' count_matrixes_h5s} count_matrixes
+        mkdir umaps
+        cp ${sep=' ' umaps_pngs} umaps
+        mkdir rank_genes
+        cp ${sep=' ' rank_genes_pngs} rank_genes
+    }
+
+    output {
+        Array[File] count_matrixes = glob("count_matrixes/*.h5")
+        Array[File] umaps = glob("umaps/umap_*.png")
+        Array[File] rank_genes = glob("rank_genes/rank_genes_groups_leiden_*.png")
     }
 }
