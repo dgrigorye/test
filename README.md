@@ -1,18 +1,17 @@
-# I cannot open and read
-https://github.com/lilab-bcb/lilab-setup/blob/master/cumulus/custom.conf
-so I don't know what is on line 33 or use this file in any way.
+### Way to use:
+#### Make sure that cromwell.jar is copied into the directory where this source code is located.
+***bash ./run_me.sh***
 
-## Way to use:
-# Build Docker image
-docker-compose build
+Observe 8 pythons running in the background.
+In few minutes there will be output which lists all of output arrays:
 
-# Copy input data from GCP
-gsutil -m cp -r gs://terra-featured-workspaces/Cumulus/cellranger_output .
+* "ScatterSingleCell.umap_png",
+* "ScatterSingleCell.count_matrix_h5ad",
+* "ScatterSingleCell.gene_rank_png".
 
-# This creates nice H5 files with different names to conveniently see them producing outputs with different names
-python rename_h5.py -i cellranger_output -o .
+#### Note: 
+This code makes sure that same-type files are "bunched up" in the same directory before end of execution.
 
-# Copy cromwell.jar to local directory or modify string below
-
-# observe 8 pythons running in the background
-java -Dconfig.file=custom.conf -jar cromwell.jar run single_cell.wdl -i input_many.json
+If this is not required, a simpler, previous version of single_cell.wdl can be used which does not have
+"GatherH5" task so output arrays at the end of the run represent files located in per-shard directories, 
+which may be acceptable for the next stages.
