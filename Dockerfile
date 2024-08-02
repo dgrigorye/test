@@ -14,9 +14,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-in
     python3-pip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip install 'scanpy[leiden]'
+RUN pip3 install 'scanpy[leiden]'
 
 USER root
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN mkdir /reporting
 WORKDIR /reporting
