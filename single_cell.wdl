@@ -1,6 +1,6 @@
 ## Simple workflow to do single cell sequencing
 
-version 1.0
+version development-1.1
 
 workflow ScatterSingleCell {
     input {
@@ -38,10 +38,10 @@ task ProcessOneH5 {
 
     String base_filename = basename(input_h5, ".h5")
 
-    command {
+    command <<<
         cp ${input_h5} .
         python /reporting/process_scanpy.py ${input_h5}
-    }
+    >>>
 
     output {
         File count_matrix = "count_matrix_~{base_filename}.h5"
@@ -50,7 +50,7 @@ task ProcessOneH5 {
     }
 
     runtime {
-        docker: docker_image
+        container: "https://github.com/dgrigorye/test"
     }
 }
 
@@ -61,14 +61,14 @@ task GatherH5 {
         Array[File] rank_genes_pngs
     }
 
-    command {
+    command <<<
         mkdir count_matrixes
         cp ${sep=' ' count_matrixes_h5s} count_matrixes
         mkdir umaps
         cp ${sep=' ' umaps_pngs} umaps
         mkdir rank_genes
         cp ${sep=' ' rank_genes_pngs} rank_genes
-    }
+    >>>
 
     output {
         Array[File] count_matrixes = glob("count_matrixes/*.h5")
