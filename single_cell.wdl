@@ -50,7 +50,7 @@ task ProcessOneH5 {
     }
 
     runtime {
-        container: "https://github.com/dgrigorye/test"
+        docker: docker_image
     }
 }
 
